@@ -225,6 +225,6 @@ MIT License — see [LICENSE](LICENSE)
 
 <div align="center">
 
-**[nakshatra016/SkySure](https://github.com/Dhee-S/SkySure)** · Built for gig workers who deserve better protection.
+**[Dhee-S/SkySure](https://github.com/Dhee-S/SkySure)** · Built for gig workers who deserve better protection.
 
 </div>
