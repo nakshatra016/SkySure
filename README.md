@@ -217,15 +217,6 @@ CONFIG = {
 }
 ```
 
-## 📚 Documentation
-
-| Document | Description |
-|----------|-------------|
-| [logics.md](logics.md) | Complete business rules & thresholds |
-| [log.md](log.md) | Prototype walkthrough & features |
-
----
-
 ## 📄 License
 
 MIT License — see [LICENSE](LICENSE)
