@@ -19,20 +19,20 @@ Designed for real-world resilience, SkySure integrates an adversarial fraud defe
 
 | Feature | Description |
 |---------|-------------|
-| ⚡ **Instant Payouts** | Sub-second claim processing via 47 behavioral signals |
-| 🛡️ **Anti-Fraud AI** | Ring detection, GPS spoofing defense, behavioral fingerprinting |
-| 🌦️ **Weather-Linked** | Open-Meteo API integration for real-time weather data |
-| 📱 **Zero-Touch** | Automatic enrollment, verification, and disbursement |
+| ⚡ **Instant Payouts** | Sub-second claim processing via 47 behavioral signals           |
+| 🛡️ **Anti-Fraud AI**   | Ring detection, GPS spoofing defense, behavioral fingerprinting |
+| 🌦️ **Weather-Linked**  | Open-Meteo API integration for real-time weather data           |
+| 📱 **Zero-Touch**      | Automatic enrollment, verification, and disbursement            |
 
 ---
 
 ## 🎯 The Problem
 
 ```
-Traditional Insurance          SkySure
-─────────────────────         ───────
-Claims required         →     No claims
-Days to process         →     < 2 seconds
+Traditional Insurance            SkySure
+─────────────────────            ───────
+Claims required          →     No claims
+Days to process          →     < 2 seconds
 Manual verification      →     AI-powered
 Vulnerable to spoofing   →     Multi-signal defense
 ```
@@ -217,24 +217,12 @@ CONFIG = {
 }
 ```
 
----
-
 ## 📚 Documentation
 
 | Document | Description |
 |----------|-------------|
 | [logics.md](logics.md) | Complete business rules & thresholds |
 | [log.md](log.md) | Prototype walkthrough & features |
-
----
-
-## ⚠️ Disclaimer
-
-This is a **prototype/demo**. For production deployment:
-- Conduct security audits & red team exercises
-- Implement IRDAI compliance (India)
-- Integrate UPI/PhonePe/Paytm payment gateways
-- Add production monitoring & alerting
 
 ---
 
