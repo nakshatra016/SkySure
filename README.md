@@ -51,17 +51,17 @@ We never trust a single signal. Every payout decision validates through **7 beha
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    PAYOUT DECISION ENGINE                         │
+│                    PAYOUT DECISION ENGINE                       │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│   📍 Device      │  📱 App      │  🌐 Network   │  👥 Social   │
-│   Intelligence   │  Behavior    │  Patterns     │  Graph       │
-│                                                                  │
-│   • GPS + Altitude    • Session logs    • IP Velocity     • Ring │
-│   • Satellite #      • Order rate     • VPN/Proxy       Detection│
-│   • Signal strength  • Engagement      • ASN patterns    • Shared│
-│   • Trajectory       • App crashes     • Geolocation     Devices │
-│                                    mismatch                         │
+│                                                                 │
+│   📍 Device      │  📱 App      │  🌐 Network   │  👥 Social  │
+│   Intelligence   │  Behavior    │  Patterns     │  Graph        │
+│                                                                 │
+│   • GPS + Altitude    • Session logs    • IP Velocity     • Ring│
+│   • Satellite #      • Order rate     • VPN/Proxy      Detection│
+│   • Signal strength  • Engagement     • ASN patterns    • Shared│
+│   • Trajectory       • App crashes     • Geolocation    Devices │
+│                                    mismatch                     │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
