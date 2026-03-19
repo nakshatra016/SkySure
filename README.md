@@ -142,24 +142,6 @@ Six weighted checks before payout:
 
 ---
 
-## 🚀 Quick Start
-
-```bash
-# Clone the repository
-git clone https://github.com/nakshatra016/SkySure.git
-cd SkySure
-
-# Install dependencies
-cd frontend && npm install
-
-# Start development server
-npm run dev
-```
-
-Open **[http://localhost:5173](http://localhost:5173)** → Click **"AI Simulation"**
-
----
-
 ## 📁 Project Structure
 
 ```
