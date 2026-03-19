@@ -178,17 +178,12 @@ SkySure/
 
 ---
 
-## 📈 Demo Outcomes
+## 🎥 2-Minute Demo Video
 
-The simulation produces varied outcomes across 5 sample riders:
+Experience how SkySure automatically detects disruptions and triggers payouts in real-time.
 
-| Rider | Weather | Activity | Outcome |
-|-------|---------|----------|---------|
-| Karthik | ☀️ Clear | Active | No payout |
-| Divya | 🌧️ Heavy rain | Active | ₹910 (High tier) |
-| Vignesh | ☀️ Clear | Inactive | ⚠️ **FRAUD DETECTED** |
-| Sundari | ⛈️ Storm | Active | ₹1,300 (Critical tier) |
-| Muthuraj | 🌦️ Moderate | Active | ₹650 (Medium tier) |
+Watch our 2-minute project pitch with demo here:  
+👉 [Click to Watch Video](https://drive.google.com/file/d/1nwMz8KzwwADkAAMUl0Wal7VGpiebV6Sg/view?usp=drivesdk)
 
 ---
 
