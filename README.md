@@ -187,6 +187,14 @@ Watch our 2-minute project pitch with demo here:
 
 ---
 
+## Prototype Link 
+
+Experience how SkySure works as our first stage prototype
+ 
+👉 [Click to visit SkySure](https://dhee-s.github.io/SkySure/)
+
+---
+
 ## 🔐 Security Features
 
 - 🔒 Firebase Authentication for admin access
