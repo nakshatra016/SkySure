@@ -12,7 +12,7 @@ import { auth } from '../firebase';
 import { dataService } from '../data/dataService';
 import { useToast } from '../App';
 
-export default function Login() {
+export default function Login({ onLoginProp }) {
   const [role, setRole] = useState('rider');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -50,6 +50,9 @@ export default function Login() {
 
       localStorage.setItem('skysure_mock_user', JSON.stringify(mockUser));
       
+      // Update App State immediately
+      if (onLoginProp) onLoginProp();
+      
       showToast(`Welcome back, ${role === 'admin' ? 'Administrator' : 'Partner'}!`, 'success');
       
       // Internal Navigation to prevent 404s
@@ -61,6 +64,8 @@ export default function Login() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      // Update App State immediately
+      if (onLoginProp) onLoginProp();
       showToast(`Welcome back, ${role === 'admin' ? 'Administrator' : 'Partner'}!`, 'success');
       
       if (role === 'admin') {

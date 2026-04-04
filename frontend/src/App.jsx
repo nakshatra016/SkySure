@@ -35,26 +35,30 @@ export default function App() {
     }, 3000);
   };
 
-  useEffect(() => {
-    // Check for mock session first
+  const handleAuthUpdate = () => {
     const mockUser = localStorage.getItem('skysure_mock_user');
     if (mockUser) {
       const parsed = JSON.parse(mockUser);
       setUser(parsed);
       setUserRole(parsed.email.includes('admin') ? 'admin' : 'rider');
       setLoading(false);
+      return true;
     }
+    return false;
+  };
 
+  useEffect(() => {
+    // 1. Check for mock session
+    const hasMock = handleAuthUpdate();
+
+    // 2. Listen for Firebase Auth
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      // Only use Firebase if no Mock user is active
       if (!localStorage.getItem('skysure_mock_user')) {
         setUser(currentUser);
         if (currentUser) {
           const email = currentUser.email?.toLowerCase() || '';
-          if (email.includes('admin')) {
-            setUserRole('admin');
-          } else {
-            setUserRole('rider');
-          }
+          setUserRole(email.includes('admin') ? 'admin' : 'rider');
         } else {
           setUserRole(null);
         }
@@ -62,13 +66,11 @@ export default function App() {
       }
     });
 
-    seedSampleRiders()
-      .then((riders) => {
-        console.log('App: seeding complete, riders:', riders?.length);
-      })
-      .catch((err) => {
-        console.error('App: seeding failed:', err);
-      });
+    // 3. Fallback to end loading if nothing found
+    if (!hasMock && !auth.currentUser) {
+       // Give Firebase a small window to initialize
+       setTimeout(() => setLoading(false), 1000);
+    }
 
     return () => unsubscribe();
   }, []);
@@ -102,7 +104,7 @@ export default function App() {
       </div>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/login" element={user ? <Navigate to={userRole === 'admin' ? '/client/overview' : '/rider'} replace /> : <Login />} />
+        <Route path="/login" element={user ? <Navigate to={userRole === 'admin' ? '/client/overview' : '/rider'} replace /> : <Login onLoginProp={handleAuthUpdate} />} />
 
         <Route path="/client" element={user && userRole === 'admin' ? <ClientLayout /> : <Navigate to="/login" replace />}>
           <Route index element={<Navigate to="/client/overview" replace />} />
