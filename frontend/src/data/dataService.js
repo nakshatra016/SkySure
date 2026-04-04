@@ -1,128 +1,121 @@
-import { getRiders, seedSampleRiders } from './mockStore';
+import ridersData from './ridersData.json';
 
-const API_BASE = '/api';
-const useBackend = true;
+const useBackend = false; // Forced false for Instant Showcase Mode
 
 export const dataService = {
-  // 1. Get Dashboard Stats
+  // 1. Get Dashboard Stats (Mock logic for local data)
   async getDashboardStats() {
-    if (useBackend) {
-      try {
-        const res = await fetch(`${API_BASE}/stats`);
-        const data = await res.json();
-        return data;
-      } catch (err) {
-        console.error('Error fetching stats:', err);
-      }
-    }
+    const riders = ridersData;
+    const highRisk = riders.filter(r => (parseFloat(r.fraud_probability) || 0) >= 0.5).length;
+    const totalPremium = riders.reduce((acc, r) => acc + (parseFloat(r.weekly_premium) || 120), 0);
 
-    // Fallback
-    const riders = await getRiders();
     return {
       totalRiders: riders.length,
+      highRiskRiders: highRisk,
       activeRiders: riders.length,
-      highRiskRiders: 0,
-      avgFraudProb: '0%',
-      premiumCollected: 0,
-      riskTrend: []
+      avgTrust: (riders.reduce((acc, r) => acc + (parseFloat(r.trust_score) || 0), 0) / riders.length).toFixed(1),
+      premiumCollected: totalPremium.toLocaleString(),
+      riskTrend: [4, 6, 8, 5, 9, 12, 10] // Sample trend
     };
   },
 
   // 2. Get All Riders
   async getRiders() {
-    if (useBackend) {
-      try {
-        const res = await fetch(`${API_BASE}/riders`);
-        const data = await res.json();
-        return data.map(r => ({
-          ...r,
-          riderId: r.id, // Compatibility with existing logic
-          restaurantCoords: r.restaurant_coords,
-          deliveryCoords: r.delivery_coords
-        }));
-      } catch (err) {
-        console.error('Error fetching riders:', err);
-      }
-    }
-
-    return await seedSampleRiders();
+    return ridersData.map(r => ({
+      ...r,
+      riderId: r.id || r.rider_id,
+      name: r.name || `Partner ${r.rider_id?.split('_').pop() || r.id?.slice(-4)}`
+    }));
   },
 
   // 3. Get Specific Rider
   async getRider(id) {
-    if (useBackend) {
-      try {
-        const res = await fetch(`${API_BASE}/riders/${id}`);
-        return await res.json();
-      } catch (err) {
-        console.error('Error fetching rider:', err);
-      }
-    }
-
-    const riders = await getRiders();
-    return riders.find(r => r.id === id) || null;
+    const rider = ridersData.find(r => r.id === id || r.rider_id === id);
+    if (!rider) return null;
+    return {
+        ...rider,
+        name: rider.name || `Partner ${rider.rider_id?.split('_').pop() || rider.id?.slice(-4)}`
+    };
   },
 
-  // 4. Get Premium Logic
+  // 4. Get Premium Logic (Moved from server to local)
   async getPremium(id) {
-    if (useBackend) {
-      try {
-        const res = await fetch(`${API_BASE}/premium/${id}`);
-        return await res.json();
-      } catch (err) {
-        console.error('Error fetching premium:', err);
-      }
-    }
+    const rider = await this.getRider(id);
+    if (!rider) return { premium: 150, riskScore: 1.0 };
+    
+    const earningEfficiency = parseFloat(rider.earning_efficiency) || 0.8;
+    const baseWeeklyPremium = parseFloat(rider.weekly_premium) || 120;
+    const riskMultiplier = 1 + (1 - earningEfficiency);
+    const premium = baseWeeklyPremium * riskMultiplier;
 
-    return { tier: 'Standard', weeklyPremium: 35 };
+    return {
+      premium: parseFloat(premium.toFixed(2)),
+      riskScore: parseFloat(riskMultiplier.toFixed(2))
+    };
   },
 
-  // 5. Run Full Simulation (Batch)
+  // 5. Run Full Simulation (Local Simulation Engine)
   async runSimulation(payload) {
-    if (useBackend) {
-      try {
-        const res = await fetch(`${API_BASE}/simulation/batch`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        return await res.json();
-      } catch (err) {
-        console.error('Error running simulation:', err);
-        throw err;
-      }
+    const { rider_id, weather, traffic, orderDrop } = payload;
+    const rider = await this.getRider(rider_id);
+    if (!rider) throw new Error("Rider mapping failed");
+
+    // 1. Premium Check
+    const premiumInfo = await this.getPremium(rider_id);
+
+    // 2. Trigger Check
+    let signals = 0;
+    if (weather === 'Stormy') signals += 1;
+    if (traffic === 'High') signals += 1;
+    if (parseFloat(orderDrop) > 0.4) signals += 1;
+    const trigger = signals >= 2;
+
+    // 3. Fraud Check
+    const fraudScore = (0.5 * parseFloat(rider.fraud_probability)) + 
+                       (0.3 * parseFloat(rider.ring_score || 0.2)) + 
+                       (0.2 * (1 - parseFloat(rider.earning_efficiency || 0.8)));
+    const fraudStatus = fraudScore > 0.7 ? "BLOCK" : "ALLOW";
+
+    // 4. Final Payout
+    let payout = 0;
+    if (trigger && fraudStatus === "ALLOW") {
+      payout = Math.min(parseFloat(rider.predicted_payout || 500), 1500);
     }
-    return null;
+
+    return {
+      riderName: rider.name,
+      input: { weather, traffic, orderDrop },
+      results: {
+        premium: premiumInfo.premium,
+        trigger,
+        fraudStatus,
+        payout,
+        finalStatus: (trigger && fraudStatus === "ALLOW") ? "APPROVED" : "DENIED"
+      }
+    };
   },
 
   // 6. Check Trigger Only
   async checkTrigger(payload) {
-    if (useBackend) {
-      try {
-        const res = await fetch(`${API_BASE}/trigger/check`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        return await res.json();
-      } catch (err) {
-        console.error('Error checking trigger:', err);
-      }
-    }
-    return null;
+    const { weather, traffic, orderDrop } = payload;
+    let signals = 0;
+    if (weather === 'Stormy') signals += 1;
+    if (traffic === 'High') signals += 1;
+    if (parseFloat(orderDrop) > 0.4) signals += 1;
+    return { trigger: signals >= 2, signals };
   },
 
-  // 7. Get Payout Logs
+  // 7. Get Payout Logs (Generated locally for showcase)
   async getPayouts(riderId = null) {
-    if (useBackend) {
-      try {
-        const url = riderId ? `${API_BASE}/payouts?riderId=${riderId}` : `${API_BASE}/payouts`;
-        const res = await fetch(url);
-        return await res.json();
-      } catch (err) {
-        console.error('Error fetching payouts:', err);
-      }
-    }
-    return [];
+    let pool = ridersData;
+    if (riderId) pool = pool.filter(r => r.id === riderId || r.rider_id === riderId);
+    
+    return pool.slice(0, 10).map(r => ({
+        id: `TRX-SKYSURE-${(r.rider_id || r.id).toUpperCase()}`,
+        riderId: r.rider_id || r.id,
+        amount: parseFloat(r.predicted_payout) || 450,
+        status: Math.random() > 0.4 ? 'Paid' : 'Pending',
+        timestamp: new Date().toISOString()
+    }));
   }
 };
