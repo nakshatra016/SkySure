@@ -9,7 +9,6 @@
     "api"
   ],
   "scripts": {
-    "install-all": "npm install && cd frontend && npm install && cd ../backend && npm install",
-    "build": "cd frontend && npm run build"
+    "build": "npm run build --workspace=frontend"
   }
 }
