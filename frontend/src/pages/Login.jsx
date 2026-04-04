@@ -232,7 +232,10 @@ export default function Login() {
                 whileTap={{ scale: 0.98 }}
               >
                 {loading ? (
-                  <div className="spinner" />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div className="spinner" style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                    <span>{role === 'admin' ? 'Initializing Terminal...' : 'Synchronizing Partner Data...'}</span>
+                  </div>
                 ) : (
                   <>
                     <span>Initialize {role === 'admin' ? 'Enterprise Control' : 'Partner Sync'}</span>
