@@ -52,9 +52,9 @@ export default function Login() {
       
       showToast(`Welcome back, ${role === 'admin' ? 'Administrator' : 'Partner'}!`, 'success');
       
-      // Force reload or trigger state update via internal navigation
+      // Internal Navigation to prevent 404s
       setTimeout(() => {
-        window.location.href = role === 'admin' ? '/client/overview' : '/rider';
+        navigate(role === 'admin' ? '/client/overview' : '/rider');
       }, 500);
       return;
     }
