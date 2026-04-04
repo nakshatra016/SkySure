@@ -380,14 +380,24 @@ app.post('/api/simulation/batch', async (req, res) => {
     }
 });
 
-// Initialization: Load data from Firestore then start server
-loadData().then(() => {
-    app.listen(PORT, () => {
-        console.log(`\n🚀 SkySure API running on http://localhost:${PORT}`);
-        console.log(`-------------------------------------------`);
-        console.log(`✅ System Status: ALL_SYSTEMS_OPERATIONAL`);
-    });
-}).catch(err => {
-    console.error('CRITICAL ERROR: Failed to load riders from Firestore', err);
-    process.exit(1);
-});
+// Initialization: Load data from Firestore then start server (skip listen in Vercel)
+const startServer = async () => {
+    try {
+        await loadData();
+        if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+            app.listen(PORT, () => {
+                console.log(`\n🚀 SkySure API running on http://localhost:${PORT}`);
+                console.log(`-------------------------------------------`);
+                console.log(`✅ System Status: ALL_SYSTEMS_OPERATIONAL`);
+            });
+        }
+    } catch (err) {
+        console.error('CRITICAL ERROR: Failed to load riders from Firestore', err);
+        // In local dev, we might exit, but in Vercel we let the request fail
+        if (process.env.NODE_ENV !== 'production') process.exit(1);
+    }
+};
+
+startServer();
+
+module.exports = app;

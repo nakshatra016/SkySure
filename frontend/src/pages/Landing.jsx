@@ -114,7 +114,7 @@ export default function Landing() {
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="hero-subtitle"
           >
-            Parametric protection for delivery partners. We use real-time environmental telemetry to trigger instant payouts when weather or traffic density blocks your path, bypassing the traditional claims process.
+            Parametric protection for Food delivery partners. We use real-time environmental telemetry to trigger instant payouts when weather or traffic density blocks your path, bypassing the traditional claims process.
           </motion.p>
 
           <motion.div
